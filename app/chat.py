@@ -30,11 +30,11 @@ def chat(message, history):
     chunks =[c for c in chunks if c["score"] >= 0.4]
 
     if not chunks:
-        yield "❌ *I don't have information about that in my NUST knowledge base. Try asking about admissions, programs, fees, hostels, or campus life.*"
+        yield "*I don't have information about that in my NUST knowledge base. Try asking about admissions, programs, fees, hostels, or campus life.*"
         return
 
-    yield "🧠 *Analyzing retrieved documents...*"
-    yield "⚙️ *Synthesizing response with Qwen 2.5...*"
+    yield "*Analyzing retrieved documents...*"
+    yield "*Synthesizing response with Qwen 2.5...*"
 
     response = ""
     first_token_time = 0
@@ -56,7 +56,7 @@ def chat(message, history):
     
     yield response
 
-# ─── COMPACT UI STYLING ────────────────────────────────
+#COMPACT UI STYLING
 CSS = """
 body, .gradio-container {
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif !important;
@@ -104,7 +104,6 @@ body, .gradio-container {
 .badge.blue { color: #3b82f6; border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05); }
 footer { display: none !important; }
 
-/* Makes the examples section tightly packed */
 .gr-examples { margin-top: 0.2rem !important; }
 """
 
@@ -141,7 +140,7 @@ with gr.Blocks(title="NUSTra — Local Assistant") as demo:
             container=False,
             autofocus=False, 
         )
-        btn = gr.Button("Send 🚀", scale=1, variant="primary")
+        btn = gr.Button("Send", scale=1, variant="primary")
         clear_btn = gr.ClearButton([txt, chatbot], value="Clear 🗑️", scale=1)
 
     gr.Examples(

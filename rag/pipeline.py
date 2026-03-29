@@ -3,7 +3,6 @@ from rag.retriever import Retriever
 
 MODEL_NAME = "qwen2.5:3b"
 
-# 🚀 FIX 1: Tiny System Prompt. Saves the CPU from reading extra rules.
 SYSTEM_PROMPT = "You are NUSTra. Answer using ONLY the given context in 1-2 sentences. If not in context, say you don't know."
 
 class RAGPipeline:
@@ -13,12 +12,9 @@ class RAGPipeline:
         print("Pipeline ready!\n")
 
     def build_prompt(self, query, chunks):
-        # 🚀 FIX 2: Only pass the #1 BEST chunk, and limit it to 60 words!
-        # This cuts the reading time of your CPU by literally 75%.
         best_chunk = chunks[0]['text'].split()[:60]
         context = " ".join(best_chunk)
 
-        # 🚀 FIX 3: Stripped down the prompt wrapper to save more tokens
         return f"Context: {context}\n\nQ: {query}\n\nAnswer:"
 
     def is_relevant(self, query, chunks):

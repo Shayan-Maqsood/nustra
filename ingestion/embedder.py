@@ -3,22 +3,9 @@ import os
 import sys
 import traceback
 import numpy as np
+import faiss
+from sentence_transformers import SentenceTransformer
 
-print("Step 1: Basic imports OK")
-
-try:
-    import faiss
-    print("Step 2: FAISS import OK")
-except Exception as e:
-    print(f"Step 2 FAILED - FAISS import error: {e}")
-    sys.exit(1)
-
-try:
-    from sentence_transformers import SentenceTransformer
-    print("Step 3: SentenceTransformer import OK")
-except Exception as e:
-    print(f"Step 3 FAILED - SentenceTransformer import error: {e}")
-    sys.exit(1)
 
 CHUNKS_FILE = "data/processed/chunks.json"
 INDEX_FILE  = "data/chroma_db/index.faiss"
@@ -43,7 +30,6 @@ def load_chunks():
 def embed_chunks(chunks, model):
     print(f"\nStep 5: Embedding {len(chunks)} chunks...")
     print(f"  Batch size: {BATCH_SIZE}")
-    print(f"  This may take 3-5 minutes on CPU...\n")
 
     texts = [c["text"] for c in chunks]
     all_embeddings = []
@@ -112,7 +98,7 @@ def save(index, chunks):
 
 def main():
     print("\n" + "="*50)
-    print(" NUSTra Embedder — with full error checking")
+    print(" NUSTra Embedder")
     print("="*50)
 
     print("\nStep 4: Loading model...")

@@ -49,7 +49,7 @@ def scrape_professor(url):
 
 
 def main():
-    print("\n RateDeezNUST Professor Scraper")
+    print("\n Professor Scraper")
     print("="*45)
 
     urls = get_all_professor_urls()
