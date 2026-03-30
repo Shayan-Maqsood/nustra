@@ -145,11 +145,11 @@ with gr.Blocks(title="NUSTra — Local Assistant") as demo:
 
     gr.Examples(
         examples=[
-            "Tell me about NUST?",
-            "What facilities are provided in NUST hostels?",
-            "How is the campus life at NUST?",
-            "How to get admission in NUST?",
-            "Is there a Saddle Club at NUST?",
+            "Does NUST offer scholarship / financial assistance?",
+            "Can i apply for rechecking NUST Entry Test Result?",
+            "Can candidates of FSc Pre-Medical apply for BS Computer Science?",
+            "What is the duration of test and the number of MCQs?",
+            "Will there be hostel facility available?",
         ],
         inputs=txt,
         label="Quick Suggestions:",

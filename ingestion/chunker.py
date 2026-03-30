@@ -1,9 +1,8 @@
 import json
 import os
 import re
+import sys
 
-WEB_FILE   = "data/raw/scraped_pages.json"
-PDF_FILE   = "data/raw/pdf_pages.json"
 OUTPUT_FILE = "data/processed/chunks.json"
 os.makedirs("data/processed", exist_ok=True)
 
@@ -28,7 +27,7 @@ def split_into_chunks(text, url, title):
         chunk_words = words[start:end]
         chunk_text = " ".join(chunk_words)
 
-        if len(chunk_words) > 50:
+        if len(chunk_words) > 5:
             chunks.append({
                 "text": chunk_text,
                 "source": url,
@@ -43,51 +42,6 @@ def split_into_chunks(text, url, title):
 
 def load_pages():
     pages = []
-
-    # Load web scraped pages
-    if os.path.exists(WEB_FILE):
-        with open(WEB_FILE, "r", encoding="utf-8") as f:
-            web_pages = json.load(f)
-        pages.extend(web_pages)
-        print(f"  Web pages loaded  : {len(web_pages)}")
-    else:
-        print(f"  [WARN] Web file not found: {WEB_FILE}")
-
-    # Load PDF extracted pages
-    if os.path.exists(PDF_FILE):
-        with open(PDF_FILE, "r", encoding="utf-8") as f:
-            pdf_pages = json.load(f)
-        pages.extend(pdf_pages)
-        print(f"  PDF pages loaded  : {len(pdf_pages)}")
-    else:
-        print(f"  [INFO] No PDF file found yet: {PDF_FILE} — skipping")
-
-    # Load professor summaries
-    prof_summary_path = "data/processed/professor_summaries.json"
-    if os.path.exists(prof_summary_path):
-        with open(prof_summary_path, "r", encoding="utf-8") as f:
-            summaries = json.load(f)
-        prof_pages = []
-        for s in summaries:
-            text = f"""Professor: {s.get('name', '')}
-                    School: {s.get('school', '')}
-                    Rating: {s.get('rating', '')} ({s.get('total_reviews', 0)} reviews)
-                    Summary: {s.get('one_line_summary', '')}
-                    Pros: {', '.join(s.get('pros', []))}
-                    Cons: {', '.join(s.get('cons', []))}
-                    Recommended for: {s.get('recommended_for', '')}
-                    Grading: {s.get('grading', '')}
-                    Teaching style: {s.get('teaching_style', '')}
-                    Verdict: {s.get('overall_verdict', '')}"""
-            prof_pages.append({
-                "url": s.get("source_url", ""),
-                "title": f"Professor Review: {s.get('name', '')} ({s.get('school', '')})",
-                "text": text
-            })
-        pages.extend(prof_pages)
-        print(f"  Professor summaries : {len(prof_pages)}")
-    else:
-        print(f"  [INFO] No professor summaries found yet")
 
     # Load FAQ data
     faq_path = "data/raw/nust_faqs.json"
@@ -107,7 +61,8 @@ Answer: {faq.get('answer', '')}"""
         pages.extend(faq_pages)
         print(f"  FAQ entries loaded : {len(faq_pages)}")
     else:
-        print(f"  [INFO] No FAQ file found yet: {faq_path}")
+        print(f"  [ERROR] No FAQ file found: {faq_path}. Please run faq_scraper first.")
+        sys.exit(1)
 
     return pages
 
@@ -125,7 +80,7 @@ def process():
 
     for page in pages:
         text = clean_text(page["text"])
-        if len(text) < 100:
+        if len(text) < 20:
             continue
 
         chunks = split_into_chunks(text, page["url"], page["title"])
