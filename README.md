@@ -1,19 +1,18 @@
-# NUSTra — NUST Retrieval Assistant
+# NUSTra — NUST FAQ Retrieval Assistant
 
-> A fully offline AI chatbot that answers questions about NUST using RAG (Retrieval-Augmented Generation). No internet required after setup.
+> A fully offline AI chatbot that answers questions about NUST using RAG (Retrieval-Augmented Generation) based exclusively on official FAQs. No internet required after setup.
 
 ---
 
 ## What is NUSTra?
 
-NUSTra is a locally-running AI chatbot built specifically for NUST (National University of Sciences & Technology, Pakistan). It answers questions about:
+NUSTra is a locally-running AI chatbot built specifically to help students and parents navigate NUST (National University of Sciences & Technology, Pakistan) through its official Frequently Asked Questions. It provides instant, grounded answers to queries regarding:
 
-- Admissions, merit lists & entry test requirements
-- Programs & degree requirements across all schools
-- Fee structures & scholarships
-- Hostel & campus life
-- All NUST schools (SEECS, SMME, CEME, MCS, NICE, S3H, and more)
-- **1000+ NUST professor ratings & student reviews**
+- Admissions, merit lists & entry test (NET) requirements
+- Fee structures, installments & scholarships
+- Eligibility criteria for various undergraduate programs (Engineering, Computing, Medical, etc.)
+- Hostel facilities, transport, and campus life
+- International & expatriate student admissions
 
 ---
 
@@ -22,19 +21,19 @@ NUSTra is a locally-running AI chatbot built specifically for NUST (National Uni
 User Question
      │
      ▼
-Embed query with MiniLM (local, offline)
+Embed query with all-MiniLM-L6-v2 (local, offline)
      │
      ▼
-Semantic search across 2500+ NUST chunks in FAISS (local)
+Semantic search across 430+ NUST FAQ chunks in FAISS (local)
      │
      ▼
-Top 2 most relevant chunks retrieved
+Top 5 most relevant FAQ chunks retrieved
      │
      ▼
 Qwen 2.5 3B generates grounded answer (local, offline)
      │
      ▼
-Response streamed to browser UI
+Response streamed to Gradio UI
 ```
 
 ---
@@ -55,10 +54,8 @@ Response streamed to browser UI
 
 | Source | Content | Size |
 |--------|---------|------|
-| nust.edu.pk + school sites | Programs, admissions, campus life | 171 pages |
-| NUST PDFs | Prospectus, handbooks, hostel rules | Multiple PDFs |
-| 1000+ professor ratings & reviews | 1000 professors |
-| **Total** | **2500+ searchable chunks** | **~5MB indexed** |
+| nust.edu.pk/faqs | Official Undergraduate Admissions FAQs | 430+ Questions |
+| **Total** | **430+ searchable FAQ chunks** | **~35KB processed** |
 
 ---
 
@@ -112,23 +109,21 @@ Open browser at: **http://127.0.0.1:7860**
 ```
 nustra/
 ├── app/
-│   └── chat.py                    # Gradio chat UI
+│   └── chat.py                    # Gradio chat UI & RAG orchestration
 ├── data/
-│   ├── raw/                       # Scraped pages + PDFs + professor data
-│   ├── processed/                 # Chunks + professor summaries
-│   └── chroma_db/                 # FAISS vector index (2500+ vectors)
+│   ├── raw/                       # Scraped FAQ JSON data
+│   ├── processed/                 # Refined FAQ chunks
+│   └── chroma_db/                 # FAISS vector index & metadata
 ├── ingestion/
-│   ├── chunker.py                 # Text chunking pipeline
+│   ├── chunker.py                 # FAQ text chunking pipeline
 │   ├── embedder.py                # MiniLM embedding + FAISS indexing
-│   └── summarizer.py              # Groq-powered professor summary generator
+│   └── summarizer.py              # Optional content summarization logic
 ├── rag/
-│   ├── retriever.py               # FAISS semantic search
-│   └── pipeline.py                # RAG loop + Qwen inference
+│   ├── retriever.py               # FAISS semantic search logic
+│   └── pipeline.py                # RAG loop + Qwen inference via Ollama
 ├── scraper/
-│   ├── web_scraper.py             # NUST website crawler (171 pages)
-│   ├── pdf_extractor.py           # PDF text extraction
-│   └── professor_scraper.py       # RateDeezNUST scraper (1000 professors)
-├── .env                           # API keys (not committed)
+│   └── faq_scraper.py             # Official NUST FAQ scraper
+├── .env                           # Environment configuration
 ├── requirements.txt
 ├── run.bat                        # One-click Windows launcher
 └── README.md
@@ -143,34 +138,23 @@ nustra/
 | LLM | Qwen 2.5 3B | Fast, accurate, fits in 8GB RAM |
 | LLM Runtime | Ollama | CPU-optimized, zero config |
 | Embeddings | all-MiniLM-L6-v2 | 80MB, fast CPU inference |
-| Vector Store | FAISS | No compiler needed, production-grade |
-| UI | Gradio 6 | Instant streaming chat interface |
-| Scraping | BeautifulSoup4 | Reliable HTML parsing |
-| PDF Parsing | pdfplumber | Accurate text extraction |
-| Prof Summaries | Groq API (one-time) | Fast batch summarization during data prep |
+| Vector Store | FAISS | High performance, local-first |
+| UI | Gradio | Instant streaming chat interface |
+| Scraping | BeautifulSoup4 | Reliable FAQ parsing |
 
 ---
 
 ## Data Pipeline (one-time setup)
 
-If you want to rebuild the knowledge base from scratch:
+If you want to rebuild the FAQ knowledge base from scratch:
 ```bash
-# 1. Scrape NUST website
-python scraper/web_scraper.py
+# 1. Scrape NUST FAQs
+python scraper/faq_scraper.py
 
-# 2. Extract PDFs (place PDFs in data/raw/pdfs/ first)
-python scraper/pdf_extractor.py
-
-# 3. Scrape professor ratings
-python scraper/professor_scraper.py
-
-# 4. Generate professor summaries (requires GROQ_API_KEY in .env)
-python ingestion/summarizer.py
-
-# 5. Chunk all data
+# 2. Chunk FAQ data
 python ingestion/chunker.py
 
-# 6. Embed and index
+# 3. Embed and Index
 python ingestion/embedder.py
 ```
 
@@ -178,20 +162,20 @@ python ingestion/embedder.py
 
 ## Sample Questions
 
-- *"What is the merit for SEECS Computer Science?"*
-- *"How much is the fee for BS programs at NUST?"*
-- *"Tell me about NUST hostel facilities"*
-- *"What programs does SMME offer?"*
-- *"How is Dr. Jaudat Mamoon as a professor?"*
-- *"Which SEECS professors are recommended for FOCP?"*
+- *"What is the merit for BS Computer Science?"*
+- *"Are there any quota or reserved seats?"*
+- *"Can Pre-Medical students apply for Engineering?"*
+- *"What is the fee structure for MBBS at NSHS?"*
+- *"Is there negative marking in the NUST Entry Test?"*
+- *"What documents are required for admission?"*
 
 ---
 
 ## Built For
 
-**NUST Hackathon — Individual Challenge, Live Finals**
+**NUST Hackathon — Automated Retrieval & Response Challenge**
 Constraints: 8GB RAM · Core i5 · No GPU · No Internet at runtime
 
 ---
 
-*Built with Python · Ollama · FAISS · Gradio · BeautifulSoup · Groq*
+*Built with Python · Ollama · FAISS · Gradio · BeautifulSoup*
