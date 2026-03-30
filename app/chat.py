@@ -148,7 +148,6 @@ with gr.Blocks(title="NUSTra — Local Assistant") as demo:
             "Tell me about NUST?",
             "What facilities are provided in NUST hostels?",
             "How is the campus life at NUST?",
-            "How is Dr. Jaudat Mamoon as a professor?",
             "How to get admission in NUST?",
             "Is there a Saddle Club at NUST?",
         ],

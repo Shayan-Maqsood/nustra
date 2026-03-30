@@ -89,6 +89,26 @@ def load_pages():
     else:
         print(f"  [INFO] No professor summaries found yet")
 
+    # Load FAQ data
+    faq_path = "data/raw/nust_faqs.json"
+    if os.path.exists(faq_path):
+        with open(faq_path, "r", encoding="utf-8") as f:
+            faq_data = json.load(f)
+        faq_pages = []
+        for faq in faq_data:
+            text = f"""FAQ Category: {faq.get('category', 'General')}
+Question: {faq.get('question', '')}
+Answer: {faq.get('answer', '')}"""
+            faq_pages.append({
+                "url": faq.get("source", "https://nust.edu.pk/faqs/"),
+                "title": f"NUST FAQ: {faq.get('question', '')[:80]}",
+                "text": text
+            })
+        pages.extend(faq_pages)
+        print(f"  FAQ entries loaded : {len(faq_pages)}")
+    else:
+        print(f"  [INFO] No FAQ file found yet: {faq_path}")
+
     return pages
 
 
