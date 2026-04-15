@@ -2,14 +2,9 @@
 title NUSTra - NUST Retrieval Assistant
 color 0A
 
-echo.
-echo  ███╗   ██╗██╗   ██╗███████╗████████╗██████╗  █████╗ 
-echo  ████╗  ██║██║   ██║██╔════╝╚══██╔══╝██╔══██╗██╔══██╗
-echo  ██╔██╗ ██║██║   ██║███████╗   ██║   ██████╔╝███████║
-echo  ██║╚██╗██║██║   ██║╚════██║   ██║   ██╔══██╗██╔══██║
-echo  ██║ ╚████║╚██████╔╝███████║   ██║   ██║  ██║██║  ██║
-echo  ╚═╝  ╚═══╝ ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝
-echo.
+set TRANSFORMERS_OFFLINE=1
+set HF_HUB_OFFLINE=1
+
 echo  NUST Retrieval Assistant — Offline AI Chatbot
 echo  -----------------------------------------------
 echo.
@@ -18,7 +13,7 @@ echo [1/3] Checking Ollama is running...
 ollama list >nul 2>&1
 if errorlevel 1 (
     echo  ERROR: Ollama is not running or not installed.
-    echo  Please install Ollama from https://ollama.com and run: ollama pull phi3:mini
+    echo  Please install Ollama from https://ollama.com and run: ollama pull qwen2.5:3b
     pause
     exit /b 1
 )

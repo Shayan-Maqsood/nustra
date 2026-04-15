@@ -116,8 +116,7 @@ nustra/
 │   └── chroma_db/                 # FAISS vector index & metadata
 ├── ingestion/
 │   ├── chunker.py                 # FAQ text chunking pipeline
-│   ├── embedder.py                # MiniLM embedding + FAISS indexing
-│   └── summarizer.py              # Optional content summarization logic
+│   └── embedder.py                # MiniLM embedding + FAISS indexing
 ├── rag/
 │   ├── retriever.py               # FAISS semantic search logic
 │   └── pipeline.py                # RAG loop + Qwen inference via Ollama

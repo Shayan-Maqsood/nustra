@@ -3,6 +3,9 @@ import sys
 import os
 import time
 
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
+os.environ["HF_HUB_OFFLINE"] = "1"
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from rag.pipeline import RAGPipeline
@@ -59,7 +62,7 @@ def chat(message, history):
 #COMPACT UI STYLING
 CSS = """
 body, .gradio-container {
-    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
 }
 .nustra-header {
     text-align: center;
@@ -121,7 +124,7 @@ HEADER_HTML = """
 </div>
 """
 
-with gr.Blocks(title="NUSTra — Local Assistant") as demo:
+with gr.Blocks(title="NUSTra — Local Assistant", analytics_enabled=False) as demo:
 
     gr.HTML(HEADER_HTML)
 
@@ -183,5 +186,5 @@ if __name__ == "__main__":
         share=False,
         show_error=True,
         css=CSS,
-        theme=gr.themes.Soft(primary_hue="blue")
+        theme=gr.themes.Soft(primary_hue="blue", font=[gr.themes.GoogleFont(""), "Arial", "sans-serif"])
     )
